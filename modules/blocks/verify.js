@@ -36,11 +36,12 @@ function Verify (logger, block, transaction, db) {
  * @method checkTransaction
  * @param  {Object}   block Block object
  * @param  {Object}   transaction Transaction object
+ * @param  {boolean}  checkExists - Check if transaction already exists in database
  * @param  {Function} cb Callback function
  * @return {Function} cb Callback function from params (through setImmediate)
  * @return {Object}   cb.err Error if occurred
  */
-__private.checkTransaction = function (block, transaction, cb) {
+__private.checkTransaction = function (block, transaction, checkExists, cb) {
 	async.waterfall([
 		function (waterCb) {
 			try {
@@ -55,24 +56,6 @@ __private.checkTransaction = function (block, transaction, cb) {
 			return setImmediate(waterCb);
 		},
 		function (waterCb) {
-			// Check if transaction is already in database, otherwise fork 2.
-			// DATABASE: read only
-			library.logic.transaction.checkConfirmed(transaction, function (err) {
-				if (err) {
-					// Fork: Transaction already confirmed.
-					modules.delegates.fork(block, 2);
-					// Undo the offending transaction.
-					// DATABASE: write
-					modules.transactions.undoUnconfirmed(transaction, function (err2) {
-						modules.transactions.removeUnconfirmedTransaction(transaction.id);
-						return setImmediate(waterCb, err2 || err);
-					});
-				} else {
-					return setImmediate(waterCb);
-				}
-			});
-		},
-		function (waterCb) {
 			// Get account from database if any (otherwise cold wallet).
 			// DATABASE: read only
 			modules.accounts.getAccount({publicKey: transaction.senderPublicKey}, waterCb);
@@ -80,10 +63,22 @@ __private.checkTransaction = function (block, transaction, cb) {
 		function (sender, waterCb) {
 			// Check if transaction id valid against database state (mem_* tables).
 			// DATABASE: read only
-			library.logic.transaction.verify(transaction, sender, waterCb);
+			library.logic.transaction.verify(transaction, sender, null, checkExists, waterCb);
 		}
 	], function (err) {
-		return setImmediate(cb, err);
+
+		if(err && err.match(/Transaction is already confirmed/)) {
+			// Fork: Transaction already confirmed.
+			modules.delegates.fork(block, 2);
+			// Undo the offending transaction.
+			// DATABASE: write
+			modules.transactions.undoUnconfirmed(transaction, function (err2) {
+				modules.transactions.removeUnconfirmedTransaction(transaction.id);
+				return setImmediate(cb, err2 || err);
+			});
+		} else {
+			return setImmediate(cb, err);
+		}
 	});
 };
 
@@ -415,6 +410,8 @@ Verify.prototype.processBlock = function (block, broadcast, cb, saveBlock) {
 		return setImmediate(cb, 'Blockchain is loading');
 	}
 
+	library.logger.debug('Processing block', block.id, 'height', block.height);
+
 	async.series({
 		normalizeBlock: function (seriesCb) {
 			try {
@@ -441,6 +438,12 @@ Verify.prototype.processBlock = function (block, broadcast, cb, saveBlock) {
 			// Check if block id is already in the database (very low probability of hash collision)
 			// TODO: In case of hash-collision, to me it would be a special autofork...
 			// DATABASE: read only
+
+			// Skip checking for existing block id if we don't need to save that block
+			if (!saveBlock) {
+				return setImmediate(seriesCb);
+			}
+
 			library.db.query(sql.getBlockId, { id: block.id }).then(function (rows) {
 				if (rows.length > 0) {
 					return setImmediate(seriesCb, ['Block', block.id, 'already exists'].join(' '));
