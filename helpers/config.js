@@ -4,9 +4,13 @@ var fs = require('fs');
 var path = require('path');
 var z_schema = require('./z_schema.js');
 var configSchema = require('../schema/config.js');
-var constants = require('../helpers/constants.js');
-const rootPath = path.dirname(path.resolve(__filename, '..'));
+
 const program = require('commander');
+const randomstring = require('randomstring');
+const _ = require('lodash');
+
+
+const rootPath = path.dirname(path.resolve(__filename, '..'));
 
 /**
  * Loads config.json file
@@ -33,9 +37,9 @@ function Config (packageJson, parseCommandLineOptions = true) {
     if (parseCommandLineOptions) {
         program.parse(process.argv);
     }
-    const network = program.network || process.env.LISK_NETWORK || 'devnet';
+    const network = program.network || process.env.ADAMANT_NETWORK || 'devnet';
 
-    const genesisBlock = loadJSONFile(`./config/${network}/genesis_block.json`);
+    const genesisBlock = loadJSONFile(`./config/${network}/genesisBlock.json`);
 
     const defaultConstants = require('../config/default/constants.js');
     const customConstants = require(`../config/${network}/constants.js`); // eslint-disable-line import/no-dynamic-require
@@ -46,7 +50,7 @@ function Config (packageJson, parseCommandLineOptions = true) {
     const defaultConfig = loadJSONFile('config/default/config.json');
     const customConfig = loadJSONFile(
         program.config ||
-        process.env.LISK_CONFIG_FILE ||
+        process.env.ADAMANT_CONFIG_FILE ||
         `config/${network}/config.json`
     );
 
@@ -55,24 +59,23 @@ function Config (packageJson, parseCommandLineOptions = true) {
         root: rootPath,
         nonce: randomstring.generate(16),
         version: packageJson.version,
-        minVersion: packageJson.lisk.minVersion,
+        minVersion: packageJson.config.minVersion,
         nethash: genesisBlock.payloadHash,
     };
 
     let commandLineConfig = {
-        wsPort: +program.port || process.env.LISK_WS_PORT || null,
-        httpPort: +program.httpPort || process.env.LISK_HTTP_PORT || null,
+        port: +program.port || process.env.ADAMANT_HTTP_PORT || null,
         address: program.address,
-        consoleLogLevel: program.log || process.env.LISK_CONSOLE_LOG_LEVEL,
+        consoleLogLevel: program.log || process.env.ADAMANT_CONSOLE_LOG_LEVEL,
         db: { database: program.database },
         loading: { snapshotRound: program.snapshot },
         peers: {
             list: extractPeersList(
-                program.peers || process.env.LISK_PEERS,
+                program.peers || process.env.ADAMANT_PEERS,
                 +program.port ||
-                process.env.LISK_WS_PORT ||
-                customConfig.wsPort ||
-                defaultConfig.wsPort
+                process.env.ADAMANT_HTTP_PORT ||
+                customConfig.port ||
+                defaultConfig.port
             ),
         },
         coverage: process.env.NODE_ENV === 'test',
@@ -103,20 +106,9 @@ function Config (packageJson, parseCommandLineOptions = true) {
 
         return appConfig;
     }
-
-	var configData = fs.readFileSync(path.resolve(process.cwd(), (configPath || 'config.json')), 'utf8');
-
-	if (!configData.length) {
-		console.log('Failed to read config file');
-		process.exit(1);
-	} else {
-		configData = JSON.parse(configData);
-	}
-
-
 }
 
-function loadJSONFile(filePath) {
+function loadJSONFile (filePath) {
     try {
         filePath = path.resolve(rootPath, filePath);
         return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -127,7 +119,7 @@ function loadJSONFile(filePath) {
     }
 }
 
-function extractPeersList(peers, defaultPort) {
+function extractPeersList (peers, defaultPort) {
     if (typeof peers === 'string') {
         return peers.split(',').map(peer => {
             peer = peer.split(':');
@@ -140,7 +132,7 @@ function extractPeersList(peers, defaultPort) {
     return [];
 }
 
-function cleanDeep(
+function cleanDeep (
     object,
     {
         emptyArrays = true,
@@ -203,7 +195,7 @@ function cleanDeep(
  */
 function validateForce (configData) {
 	if (configData.forging.force) {
-		var index = constants.nethashes.indexOf(configData.nethash);
+		var index = configData.constants.nethashes.indexOf(configData.nethash);
 
 		if (index !== -1) {
 			console.log('Forced forging disabled for nethash', configData.nethash);

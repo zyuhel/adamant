@@ -29,6 +29,8 @@ var extend = require('extend');
 var fs = require('fs');
 
 var genesisblock = require('./genesisBlock.json');
+var AppConfig = require('./helpers/config.js');
+
 var git = require('./helpers/git.js');
 var https = require('https');
 var Logger = require('./logger.js');
@@ -55,57 +57,20 @@ if (typeof gc !== 'undefined') {
 	}, 60000);
 }
 
-program
-	.version(packageJson.version)
-	.option('-c, --config <path>', 'config file path')
-	.option('-p, --port <port>', 'listening port number')
-	.option('-a, --address <ip>', 'listening host name or ip')
-	.option('-x, --peers [peers...]', 'peers list')
-	.option('-l, --log <level>', 'log level')
-	.option('-s, --snapshot <round>', 'verify snapshot')
-	.parse(process.argv);
+
 
 /**
  * @property {object} - The default list of configuration options. Can be updated by CLI.
  * @default 'config.json'
  */
-var appConfig = require('./helpers/config.js')(program.config);
+var appConfig = AppConfig(require('./package.json'));
 
-if (program.port) {
-	appConfig.port = program.port;
-}
 
-if (program.address) {
-	appConfig.address = program.address;
-}
+process.env.ADAMANT_NETWORK = appConfig.network;
 
-if (program.peers) {
-	if (typeof program.peers === 'string') {
-		appConfig.peers.list = program.peers.split(',').map(function (peer) {
-			peer = peer.split(':');
-			return {
-				ip: peer.shift(),
-				port: peer.shift() || appConfig.port
-			};
-		});
-	} else {
-		appConfig.peers.list = [];
-	}
-}
-
-if (program.log) {
-	appConfig.consoleLogLevel = program.log;
-}
-
-if (program.snapshot) {
-	appConfig.loading.snapshot = Math.abs(
-		Math.floor(program.snapshot)
-	);
-}
-
-if (process.env.NODE_ENV === 'test') {
-	appConfig.coverage = true;
-}
+// Global objects to be utilized under modules/helpers where scope is not accessible
+global.constants = appConfig.constants;
+global.exceptions = appConfig.exceptions;
 
 // Define top endpoint availability
 process.env.TOP = appConfig.topAccounts;
