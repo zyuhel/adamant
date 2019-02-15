@@ -1,0 +1,32 @@
+{
+  "peers": {
+    "enabled": true,
+    "list": [
+      {
+        "ip": "51.15.221.205",
+        "port": 36666
+      },
+      {
+        "ip": "51.15.88.53",
+        "port": 36666
+      },
+      {
+        "ip": "176.9.38.204",
+        "port": 36666
+      }
+    ],
+    "access": {
+      "blackList": []
+    },
+    "options": {
+      "limits": {
+        "max": 0,
+        "delayMs": 0,
+        "delayAfter": 0,
+        "windowMs": 60000
+      },
+      "timeout": 5000
+    }
+  },
+  "nethash": "bd330166898377fb28743ceef5e43a5d9d0a3efd9b3451fb7bc53530bb0a6d64"
+}
