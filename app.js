@@ -63,7 +63,7 @@ if (typeof gc !== 'undefined') {
  * @property {object} - The default list of configuration options. Can be updated by CLI.
  * @default 'config.json'
  */
-var appConfig = AppConfig(require('./package.json'));
+var appConfig = AppConfig(packageJson);
 var genesisblock = appConfig.genesisBlock;
 
 process.env.ADAMANT_NETWORK = appConfig.network;
