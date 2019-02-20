@@ -28,7 +28,7 @@ var checkIpInList = require('./helpers/checkIpInList.js');
 var extend = require('extend');
 var fs = require('fs');
 
-var genesisblock = require('./genesisBlock.json');
+
 var AppConfig = require('./helpers/config.js');
 
 var git = require('./helpers/git.js');
@@ -64,7 +64,7 @@ if (typeof gc !== 'undefined') {
  * @default 'config.json'
  */
 var appConfig = AppConfig(require('./package.json'));
-
+var genesisblock = appConfig.genesisBlock;
 
 process.env.ADAMANT_NETWORK = appConfig.network;
 
