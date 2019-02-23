@@ -2,7 +2,7 @@
 
 var bignum = require('./bignum');
 var slots = require('./slots');
-var exceptions = require('./exceptions');
+var exceptions = global.exceptions;
 
 /**
  * Sets round fees and rewards
