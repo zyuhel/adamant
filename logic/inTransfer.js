@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var sql = require('../sql/dapps.js');
 
 // Private fields
@@ -133,7 +133,7 @@ InTransfer.prototype.getBytes = function (trs) {
 
 /**
  * Calls getGenesis with dappid to obtain authorId.
- * Calls mergeAccountAndGet with unconfirmed trs amount and authorId as 
+ * Calls mergeAccountAndGet with unconfirmed trs amount and authorId as
  * address.
  * @implements {shared.getGenesis}
  * @implements {modules.accounts.mergeAccountAndGet}
@@ -163,7 +163,7 @@ InTransfer.prototype.apply = function (trs, block, sender, cb) {
 
 /**
  * Calls getGenesis with dappid to obtain authorId.
- * Calls mergeAccountAndGet with authorId as address and unconfirmed 
+ * Calls mergeAccountAndGet with authorId as address and unconfirmed
  * trs amount and balance both negatives.
  * @implements {shared.getGenesis}
  * @implements {modules.accounts.mergeAccountAndGet}
@@ -269,7 +269,7 @@ InTransfer.prototype.dbFields = [
 ];
 
 /**
- * Creates db operation object to 'intransfer' table based on 
+ * Creates db operation object to 'intransfer' table based on
  * inTransfer data.
  * @param {transaction} trs
  * @return {Object[]} table, fields, values.
@@ -298,7 +298,7 @@ InTransfer.prototype.afterSave = function (trs, cb) {
  * Checks sender multisignatures and transaction signatures.
  * @param {transaction} trs
  * @param {account} sender
- * @return {boolean} True if transaction signatures greather than 
+ * @return {boolean} True if transaction signatures greather than
  * sender multimin or there are not sender multisignatures.
  */
 InTransfer.prototype.ready = function (trs, sender) {

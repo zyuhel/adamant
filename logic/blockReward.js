@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 
 // Private fields
 var __private = {};

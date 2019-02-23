@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var async = require('async');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var crypto = require('crypto');
 var Chat = require('../logic/chat.js');
 var extend = require('extend');

@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var crypto = require('crypto');
 var sandboxHelper = require('../helpers/sandbox.js');
 var schema = require('../schema/signatures.js');

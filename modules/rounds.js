@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var Round = require('../logic/round.js');
 var sandboxHelper = require('../helpers/sandbox.js');
 var slots = require('../helpers/slots.js');
@@ -71,7 +71,7 @@ Rounds.prototype.calc = function (height) {
  * @param {number} round
  * @param {function} cb
  * @return {setImmediateCallback} error message | cb
- * 
+ *
  */
 Rounds.prototype.flush = function (round, cb) {
 	library.db.none(sql.flush, {round: round}).then(function () {

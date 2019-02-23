@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var sql = require('../sql/dapps.js');
 
 // Private fields
@@ -102,7 +102,7 @@ OutTransfer.prototype.verify = function (trs, sender, cb) {
 };
 
 /**
- * Finds application into `dapps` table. Checks if transaction is already 
+ * Finds application into `dapps` table. Checks if transaction is already
  * processed. Checks if transaction is already confirmed.
  * @implements {library.db.one}
  * @param {transaction} trs
@@ -316,7 +316,7 @@ OutTransfer.prototype.dbFields = [
 ];
 
 /**
- * Creates db operation object to 'outtransfer' table based on 
+ * Creates db operation object to 'outtransfer' table based on
  * outTransfer data.
  * @param {transaction} trs
  * @return {Object[]} table, fields, values.
@@ -358,7 +358,7 @@ OutTransfer.prototype.afterSave = function (trs, cb) {
  * Checks sender multisignatures and transaction signatures.
  * @param {transaction} trs
  * @param {account} sender
- * @return {boolean} True if transaction signatures greather than 
+ * @return {boolean} True if transaction signatures greather than
  * sender multimin or there are not sender multisignatures.
  */
 OutTransfer.prototype.ready = function (trs, sender) {

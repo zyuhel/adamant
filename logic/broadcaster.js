@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var jobsQueue = require('../helpers/jobsQueue.js');
 var extend = require('extend');
 var _ = require('lodash');
@@ -131,7 +131,7 @@ Broadcaster.prototype.enqueue = function (params, options) {
 };
 
 /**
- * Gets peers and for each peer create it and broadcast. 
+ * Gets peers and for each peer create it and broadcast.
  * @implements {getPeers}
  * @implements {library.logic.peers.create}
  * @param {Object} params
@@ -154,7 +154,7 @@ Broadcaster.prototype.broadcast = function (params, options, cb) {
 		function getFromPeer (peers, waterCb) {
 			library.logger.debug('Begin broadcast', options);
 
-			if (params.limit === self.config.peerLimit) { 
+			if (params.limit === self.config.peerLimit) {
 				peers = peers.slice(0, self.config.broadcastLimit);
 			}
 

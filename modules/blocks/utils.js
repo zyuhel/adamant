@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
-var constants = require('../../helpers/constants.js');
+var constants = global.constants;
 var sql = require('../../sql/blocks.js');
 var transactionTypes = require('../../helpers/transactionTypes.js');
 
@@ -124,7 +124,7 @@ Utils.prototype.loadBlocksPart = function (filter, cb) {
 /**
  * Loads full normalized last block from database
  * see: loader.loadBlockChain (private)
- * 
+ *
  * @async
  * @public
  * @method loadLastBlock

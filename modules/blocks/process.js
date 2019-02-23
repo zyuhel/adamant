@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var async = require('async');
-var constants = require('../../helpers/constants.js');
+var constants = global.constants;
 var schema = require('../../schema/blocks.js');
 var slots = require('../../helpers/slots.js');
 var sql = require('../../sql/blocks.js');

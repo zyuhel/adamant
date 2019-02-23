@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var async = require('async');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var jobsQueue = require('../helpers/jobsQueue.js');
 var extend = require('extend');
 var fs = require('fs');

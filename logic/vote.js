@@ -1,8 +1,8 @@
 'use strict';
 
 var async = require('async');
-var constants = require('../helpers/constants.js');
-var exceptions = require('../helpers/exceptions.js');
+var constants = global.constants;
+var exceptions = global.exceptions;
 var Diff = require('../helpers/diff.js');
 var _ = require('lodash');
 
@@ -97,7 +97,7 @@ Vote.prototype.calculateFee = function (trs, sender) {
  * @param {transaction} trs
  * @param {account} sender
  * @param {function} cb - Callback function.
- * @returns {setImmediateCallback|function} returns error if invalid field | 
+ * @returns {setImmediateCallback|function} returns error if invalid field |
  * calls checkConfirmedDelegates.
  */
 Vote.prototype.verify = function (trs, sender, cb) {
@@ -170,7 +170,7 @@ Vote.prototype.verifyVote = function (vote, cb) {
  * @implements {modules.delegates.checkConfirmedDelegates}
  * @param {transaction} trs
  * @param {function} cb - Callback function.
- * @return {setImmediateCallback} cb, err(if transaction id is not in 
+ * @return {setImmediateCallback} cb, err(if transaction id is not in
  * exceptions votes list)
  */
 Vote.prototype.checkConfirmedDelegates = function (trs, cb) {
@@ -190,7 +190,7 @@ Vote.prototype.checkConfirmedDelegates = function (trs, cb) {
  * @implements {modules.delegates.checkUnconfirmedDelegates}
  * @param {Object} trs
  * @param {function} cb
- * @return {setImmediateCallback} cb, err(if transaction id is not in 
+ * @return {setImmediateCallback} cb, err(if transaction id is not in
  * exceptions votes list)
  */
 Vote.prototype.checkUnconfirmedDelegates = function (trs, cb) {
@@ -265,7 +265,7 @@ Vote.prototype.apply = function (trs, block, sender, cb) {
 };
 
 /**
- * Calls Diff.reverse to change asset.votes signs and merges account to 
+ * Calls Diff.reverse to change asset.votes signs and merges account to
  * sender address with inverted votes as delegates.
  * @implements {Diff}
  * @implements {scope.account.merge}
@@ -318,7 +318,7 @@ Vote.prototype.applyUnconfirmed = function (trs, sender, cb) {
 };
 
 /**
- * Calls Diff.reverse to change asset.votes signs and merges account to 
+ * Calls Diff.reverse to change asset.votes signs and merges account to
  * sender address with inverted votes as unconfirmed delegates.
  * @implements {Diff}
  * @implements {scope.account.merge}
@@ -421,7 +421,7 @@ Vote.prototype.dbSave = function (trs) {
  * Checks sender multisignatures and transaction signatures.
  * @param {transaction} trs
  * @param {account} sender
- * @return {boolean} True if transaction signatures greather than 
+ * @return {boolean} True if transaction signatures greather than
  * sender multimin or there are not sender multisignatures.
  */
 Vote.prototype.ready = function (trs, sender) {

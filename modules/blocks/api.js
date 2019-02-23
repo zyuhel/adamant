@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var BlockReward = require('../../logic/blockReward.js');
-var constants = require('../../helpers/constants.js');
+var constants = global.constants;
 var OrderBy = require('../../helpers/orderBy.js');
 var schema = require('../../schema/blocks.js');
 var sql = require('../../sql/blocks.js');

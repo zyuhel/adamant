@@ -6,7 +6,7 @@ var bignum = require('../helpers/bignum.js');
 var accounts = require('../helpers/accounts.js');
 var ByteBuffer = require('bytebuffer');
 var BlockReward = require('../logic/blockReward.js');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 
 // Private fields
 var __private = {};

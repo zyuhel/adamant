@@ -2,9 +2,9 @@
 
 var async = require('async');
 var ByteBuffer = require('bytebuffer');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
+var exceptions = global.exceptions;
 var Diff = require('../helpers/diff.js');
-var exceptions = require('../helpers/exceptions.js');
 
 // Private fields
 var modules, library, __private = {};

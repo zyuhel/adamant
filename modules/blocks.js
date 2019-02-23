@@ -1,6 +1,6 @@
 'use strict';
 
-var constants     = require('../helpers/constants.js');
+var constants     = global.constants;
 var sandboxHelper = require('../helpers/sandbox.js');
 // Submodules
 var blocksAPI     = require('./blocks/api');
@@ -33,21 +33,21 @@ __private.isActive = false;
 function Blocks (cb, scope) {
 	library = {
 		logger: scope.logger,
-	};	
+	};
 
 	// Initialize submodules with library content
 	this.submodules = {
 		api:     new blocksAPI(
 			scope.logger, scope.db, scope.logic.block, scope.schema, scope.dbSequence
 		),
-		verify:  new blocksVerify(scope.logger, scope.logic.block, 
+		verify:  new blocksVerify(scope.logger, scope.logic.block,
 			scope.logic.transaction, scope.db
 		),
 		process: new blocksProcess(
 			scope.logger, scope.logic.block, scope.logic.peers, scope.logic.transaction,
 			scope.schema, scope.db, scope.dbSequence, scope.sequence, scope.genesisblock
 		),
-		utils:   new blocksUtils(scope.logger, scope.logic.block, scope.logic.transaction, 
+		utils:   new blocksUtils(scope.logger, scope.logic.block, scope.logic.transaction,
 			scope.db, scope.dbSequence, scope.genesisblock
 		),
 		chain:   new blocksChain(
@@ -152,7 +152,7 @@ Blocks.prototype.isCleaning = {
  * @public
  * @async
  * @method sandboxApi
- * @param  {string}   call Name of the function to be called 
+ * @param  {string}   call Name of the function to be called
  * @param  {Object}   args Arguments
  * @param  {Function} cb Callback function
  */

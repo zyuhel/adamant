@@ -5,7 +5,7 @@ var async = require('async');
 var Broadcaster = require('../logic/broadcaster.js');
 var Peer = require('../logic/peer.js');
 var bignum = require('../helpers/bignum.js');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var crypto = require('crypto');
 var extend = require('extend');
 var ip = require('ip');
@@ -209,7 +209,7 @@ __private.receiveTransactions = function (query, peer, extraLogMessage, cb) {
 
 /**
  * Normalizes transaction and remove peer if it fails.
- * Calls balancesSequence.add to receive transaction and 
+ * Calls balancesSequence.add to receive transaction and
  * processUnconfirmedTransaction to confirm it.
  * @private
  * @implements {library.logic.transaction.objectNormalize}
@@ -534,7 +534,7 @@ Transport.prototype.cleanup = function (cb) {
 
 /**
  * Returns true if modules are loaded and private variable loaded is true.
- * @return {boolean} 
+ * @return {boolean}
  */
 Transport.prototype.isLoaded = function () {
 	return modules && __private.loaded;

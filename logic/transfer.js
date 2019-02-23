@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 
 // Private fields
 var modules;
@@ -167,7 +167,7 @@ Transfer.prototype.undoUnconfirmed = function (trs, sender, cb) {
 };
 
 /**
- * Deletes blockId from transaction 
+ * Deletes blockId from transaction
  * @param {transaction} trs
  * @return {transaction}
  */
@@ -196,7 +196,7 @@ Transfer.prototype.dbSave = function (trs) {
  * Checks sender multisignatures and transaction signatures.
  * @param {transaction} trs
  * @param {account} sender
- * @return {boolean} True if transaction signatures greather than 
+ * @return {boolean} True if transaction signatures greather than
  * sender multimin or there are not sender multisignatures.
  */
 Transfer.prototype.ready = function (trs, sender) {

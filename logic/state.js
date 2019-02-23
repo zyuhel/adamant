@@ -1,7 +1,7 @@
 'use strict';
 
 var ByteBuffer = require('bytebuffer');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var sql = require('../sql/states.js');
 var valid_url = require('valid-url');
 var slots = require('../helpers/slots.js');

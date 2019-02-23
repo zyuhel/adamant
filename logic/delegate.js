@@ -1,6 +1,7 @@
 'use strict';
 
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
+
 
 // Private fields
 var modules, library;
@@ -85,7 +86,7 @@ Delegate.prototype.calculateFee = function (trs, sender) {
  * @param {transaction} trs
  * @param {account} sender
  * @param {function} cb - Callback function.
- * @returns {setImmediateCallback|Object} returns error if invalid parameter | 
+ * @returns {setImmediateCallback|Object} returns error if invalid parameter |
  * trs validated.
  */
 Delegate.prototype.verify = function (trs, sender, cb) {
@@ -254,7 +255,7 @@ Delegate.prototype.applyUnconfirmed = function (trs, sender, cb) {
 };
 
 /**
- * Checks trs delegate and calls modules.accounts.setAccountAndGet() with 
+ * Checks trs delegate and calls modules.accounts.setAccountAndGet() with
  * username and u_username both null.
  * @implements module:accounts#Accounts~setAccountAndGet
  * @param {transaction} trs

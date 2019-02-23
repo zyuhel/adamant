@@ -1,7 +1,7 @@
 'use strict';
 
 var ByteBuffer = require('bytebuffer');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
 var dappCategories = require('../helpers/dappCategories.js');
 var sql = require('../sql/dapps.js');
 var valid_url = require('valid-url');
@@ -73,7 +73,7 @@ DApp.prototype.calculateFee = function (trs, sender) {
 };
 
 /**
- * Verifies transaction and dapp fields. Checks dapp name and link in 
+ * Verifies transaction and dapp fields. Checks dapp name and link in
  * `dapps` table.
  * @implements {library.db.query}
  * @param {transaction} trs
@@ -279,7 +279,7 @@ DApp.prototype.undo = function (trs, block, sender, cb) {
 };
 
 /**
- * Checks if dapp name and link exists, if not adds them to private 
+ * Checks if dapp name and link exists, if not adds them to private
  * unconfirmed variables.
  * @param {transaction} trs
  * @param {account} sender
@@ -470,7 +470,7 @@ DApp.prototype.afterSave = function (trs, cb) {
  * Checks sender multisignatures and transaction signatures.
  * @param {transaction} trs
  * @param {account} sender
- * @return {boolean} True if transaction signatures greather than 
+ * @return {boolean} True if transaction signatures greather than
  * sender multimin or there are not sender multisignatures.
  */
 DApp.prototype.ready = function (trs, sender) {

@@ -1,6 +1,6 @@
 'use strict';
 
-var constants = require('./constants.js');
+var constants = global.constants;
 /**
  * @memberof module:helpers
  * @module helpers/slots

@@ -1,11 +1,12 @@
 'use strict';
 
 var ByteBuffer = require('bytebuffer');
-var constants = require('../helpers/constants.js');
+var constants = global.constants;
+var exceptions = global.exceptions;
 var sql = require('../sql/chats.js');
 var valid_url = require('valid-url');
 var slots = require('../helpers/slots.js');
-var exceptions = require('../helpers/exceptions.js');
+
 
 // Private fields
 var self, library, __private = {};
