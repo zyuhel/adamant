@@ -1,6 +1,6 @@
 {
   "name": "adamant",
-  "version": "0.7.0-beta.2",
+  "version": "0.7.0-beta.3",
   "private": true,
   "scripts": {
     "start": "node app.js",
@@ -35,6 +35,7 @@
     "ip": "=1.1.5",
     "js-nacl": "=1.3.2",
     "json-schema": "=0.3.0",
+    "json-sql": "LiskHQ/json-sql#27e1ed1",
     "lodash": "=4.17.21",
     "method-override": "=3.0.0",
     "npm": "=7.19.0",
