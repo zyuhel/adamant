@@ -3,7 +3,7 @@
 var async = require('async');
 var pgp = require('pg-promise');
 var path = require('path');
-var jsonSql = require('../modules/json-sql/index.js')();
+var jsonSql = require('json-sql')();
 jsonSql.setDialect('postgresql');
 var constants = require('../helpers/constants.js');
 var slots = require('../helpers/slots.js');
@@ -384,7 +384,7 @@ function Account (db, schema, logger, cb) {
 		return _tmp;
 	});
 	
-	// Obtains bynary fields from model
+	// Obtains binary fields from model
 	this.binary = [];
 	this.model.forEach(function (field) {
 		if (field.type === 'Binary') {
@@ -494,7 +494,7 @@ Account.prototype.objectNormalize = function (account) {
 };
 
 /**
- * Checks type, lenght and format from publicKey.
+ * Checks type, length and format from publicKey.
  * @param {publicKey} publicKey
  * @throws {string} throws one error for every check.
  */
@@ -598,6 +598,12 @@ Account.prototype.getAll = function (filter, fields, cb) {
 	}
 	delete filter.sort;
 
+	if (typeof filter.address === 'string') {
+		filter.address = {
+			$upper: ['address', filter.address]
+		};
+	}
+
 	var sql = jsonSql.build({
 		type: 'select',
 		table: this.table,
@@ -605,14 +611,9 @@ Account.prototype.getAll = function (filter, fields, cb) {
 		offset: offset,
 		sort: sort,
 		alias: 'a',
+		condition: filter,
 		fields: realFields
 	});
-
-	// Fix for /api/accounts query
-
-	if (filter.address && /u_isDelegate/.test(sql.query))
-		sql.query = sql.query.substring(0, sql.query.toString().length-1) 
-			+ `where "address"=` + `'` + filter.address + `';`;
 
 	this.scope.db.query(sql.query, sql.values).then(function (rows) {
 		return setImmediate(cb, null, rows);
@@ -638,30 +639,18 @@ Account.prototype.set = function (address, fields, cb) {
 	fields.address = address;
 
 	var sql = jsonSql.build({
-		type: 'insert',
+		type: 'insertorupdate',
 		table: this.table,
 		conflictFields: ['address'],
 		values: this.toDB(fields),
 		modifier: this.toDB(fields)
 	});
 
-	// json-sql lib specifies values as ($p1, $p2), 
-	// which leads to the sql syntax error in postgresql >= 12.7
-	sql.query = sql.query.substring(0, sql.values.length-1) 
-		+ `values(`+ `'` + fields.address + `',` 
-		+ `'` + fields.publicKey.toString('hex') + `'` + `);`;
-
 	this.scope.db.none(sql.query, sql.values).then(function () {
 		return setImmediate(cb);
 	}).catch(function (err) {
-		// Ignore QueryResultError: No return data was expected
-		// In the case when the record is not inserted into 
-		// the table (address exists)
-		if (err.message !== "No return data was expected.") {
-			library.logger.error(err.stack);
-			return setImmediate(cb, 'Account#set error');
-		}
-		return setImmediate(cb);
+		library.logger.error(err.stack);
+		return setImmediate(cb, 'Account#set error');
 	});
 };
 
@@ -695,7 +684,7 @@ Account.prototype.merge = function (address, diff, cb) {
 			case Number:
 				if (isNaN(trueValue) || trueValue === Infinity) {
 					console.log(diff);
-					return setImmediate(cb, 'Encountered unsane number: ' + trueValue);
+					return setImmediate(cb, 'Encountered insane number: ' + trueValue);
 				} else if (Math.abs(trueValue) === trueValue && trueValue !== 0) {
 					update.$inc = update.$inc || {};
 					update.$inc[value] = Math.floor(trueValue);
