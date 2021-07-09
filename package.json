@@ -1,6 +1,6 @@
 {
   "name": "adamant",
-  "version": "0.7.0",
+  "version": "0.7.0-beta.2",
   "private": true,
   "scripts": {
     "start": "node app.js",
